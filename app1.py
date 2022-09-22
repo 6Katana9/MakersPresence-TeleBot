@@ -57,7 +57,7 @@ def send_msg_ev():
 def _in_makers(message, x_date, max_timeout=10):
 	BOT.delete_message(message.chat.id, message.message_id)
 	if message.forward_date == None:
-		if message.location is not None and geocoder(message.location.latitude, message.location.longitude) == '29, Табышалиева улица, Бишкек, 720222, Киргизия':
+		if message.location is not None and geocoder(message.location.latitude, message.location.longitude) == '29, Табышалиева улица, ББ, Бишкек, 720222, Киргизия':
 			date_ = message.date
 			date = str(datetime.timedelta(seconds=date_)).split(", ")[-1]
 			hour, minutes, seconds = date.split(":")
