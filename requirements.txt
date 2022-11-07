@@ -1,9 +1,9 @@
-aiogram==2.21
-aiohttp==3.8.1
-aiosignal==1.2.0
-APScheduler==3.9.1
-async-timeout==4.0.2
-Babel==2.9.1
+aiogram
+aiohttp
+aiosignal
+APScheduler
+async-timeout
+Babel
 pyTelegramBotAPI
 requests
 python-decouple
