@@ -55,7 +55,7 @@ def send_msg_ev():
 			BOT.send_message(i['telegram_id'], text)
 
 
-def _in_makers(message, x_date, max_timeout=10):
+def _in_makers(message, x_date, max_timeout=15):
 	BOT.delete_message(message.chat.id, message.message_id)
 	if message.forward_date == None:
 		if message.location is not None and geocoder(message.location.latitude, message.location.longitude) == '29, Табышалиева улица, БП, Бишкек, 720222, Киргизия':
@@ -79,7 +79,6 @@ def _in_makers(message, x_date, max_timeout=10):
 				if res.status_code == 404:
 					text = "Сори, тебя нет в бд"
 				else:
-					
 					data = json.loads(res.text)
 					time = data["time"]
 					is_late = data["is_late"]
@@ -107,8 +106,8 @@ def geocoder(latitude, longitude):
     return address.get("display_name")
     
 
-schedule.every().day.at("03:30:00").do(send_msg_day)
-schedule.every().day.at("11:55:00").do(send_msg_ev)
+# schedule.every().day.at("03:30:00").do(send_msg_day)
+# schedule.every().day.at("11:55:00").do(send_msg_ev)
 
 
 def bot_proc():
@@ -120,8 +119,8 @@ def send_proc():
 		t.sleep(1)
 
 if __name__ == '__main__':
-	send_p = Process(target=send_proc, args=())
-	send_p.start()
+	# send_p = Process(target=send_proc, args=())
+	# send_p.start()
 	bot_proc()
 
 
