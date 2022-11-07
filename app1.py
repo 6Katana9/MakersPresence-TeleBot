@@ -3,7 +3,6 @@ from telebot import types
 import requests
 import datetime
 import schedule, time as t
-import json
 from multiprocessing import Process
 
 
@@ -73,14 +72,14 @@ def _in_makers(message, x_date, max_timeout=15):
 			timeset = (datetime.datetime.now() - x_date).seconds < max_timeout
 			if timeset:
 				responce = requests.post(f'{API}/login/',{'username':'bot', 'password':'12345678asdfghjk'})
-				auth = json.loads(responce.text)['access']
+				auth = responce.json()['access']
 				headers = {'Authorization':f'Bearer {auth}'}
 				res = requests.post(f'{API}/check/', data, headers=headers)
-				print(f"data: {data}", f"responce: {res.text}", sep='\n')
+				print(f"data: {data}", f"responce: {res.json()}", f"status: {res.status_code}", sep='\n')
 				if res.status_code == 404:
 					text = "Сори, тебя нет в бд"
 				else:
-					data = json.loads(res.text)
+					data = res.json()
 					time = data["time"]
 					is_late = data["is_late"]
 					if is_late:
