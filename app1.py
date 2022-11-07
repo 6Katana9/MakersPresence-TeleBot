@@ -8,9 +8,10 @@ from multiprocessing import Process
 
 
 
-TOKEN='5357024980:AAGJJZ9NSQKdIlmENeDWYHZ3_x2GZWzpuVo'
+TOKEN='5653259301:AAFeDvJbrYgisqp3_2CHb2_Fid7Jb-uQO1U'
 BOT = telebot.TeleBot(TOKEN)
 
+API = 'https://check-mentors-crm.herokuapp.com'
 
 LOCATION_KB = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
 LOCATION_KB.add(types.KeyboardButton(text="Точно", request_location=True))
@@ -41,14 +42,14 @@ def in_makers(message, x_date):
 
 def send_msg_day():
 	text = 'Успей отметиться'
-	res = requests.get('https://check-mentors-crm.herokuapp.com/mentors/').json()
+	res = requests.get(f'{API}/mentors/').json()
 	for i in res:
 		if i['telegram_id'] is not None and i["come_time"]=='09:55:00':
 			BOT.send_message(i['telegram_id'], text)
 	
 def send_msg_ev():
 	text = 'Успей отметиться'
-	res = requests.get('https://check-mentors-crm.herokuapp.com/mentors/').json()
+	res = requests.get(f'{API}/mentors/').json()
 	for i in res:
 		if i['telegram_id'] is not None and i["come_time"]=='18:15:00':
 			BOT.send_message(i['telegram_id'], text)
@@ -71,7 +72,10 @@ def _in_makers(message, x_date, max_timeout=10):
 			}
 			timeset = (datetime.datetime.now() - x_date).seconds < max_timeout
 			if timeset:
-				res = requests.post(f'https://check-mentors-crm.herokuapp.com/check/', data)
+				responce = requests.post(f'{API}/login/',{'username':'bot', 'password':'12345678asdfghjk'})
+				auth = json.loads(responce.text)['access']
+				headers = {'Authorization':f'Bearer {auth}'}
+				res = requests.post(f'{API}/check/', data, headers=headers)
 				if res.status_code == 404:
 					text = "Сори, тебя нет в бд"
 				else:
