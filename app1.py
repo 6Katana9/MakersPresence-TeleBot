@@ -76,6 +76,7 @@ def _in_makers(message, x_date, max_timeout=15):
 				auth = json.loads(responce.text)['access']
 				headers = {'Authorization':f'Bearer {auth}'}
 				res = requests.post(f'{API}/check/', data, headers=headers)
+				print(f"data: {data}", f"responce: {res.text}", sep='\n')
 				if res.status_code == 404:
 					text = "Сори, тебя нет в бд"
 				else:
