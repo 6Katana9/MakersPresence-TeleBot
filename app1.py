@@ -3,7 +3,7 @@ from telebot import types
 import requests
 import datetime
 import schedule, time as t
-from multiprocessing import Process
+# from multiprocessing import Process
 from decouple import config
 
 TOKEN=config("TOKEN")
@@ -30,15 +30,10 @@ def _(message):
 		BOT.send_message(892891195, str(message.from_user))
 		date = datetime.datetime.now()
 		BOT.send_message(message.chat.id, 'Точно?', reply_markup=LOCATION_KB)
-		BOT.register_next_step_handler(message, in_makers, x_date=date)
+		BOT.register_next_step_handler(message, _in_makers, x_date=date)
 	else:
 		text = 'Бот фиксирует время прихода.\nКак пользоваться?\n1.Включить геолокацию на телефоне\n2.Нажать на кнопку "Я в мейкерс", которая находится рядом с клавиатурой\nВНИМАНИЕ\n1.Бот не работает на TelegramDesktop, так как через комп нельзя отправить геоданные\n2.Обмануть систему не получится'
 		BOT.send_message(message.chat.id, text)
-
-
-def in_makers(message, x_date):
-    _in_makers(message, x_date)
-
 
 def send_msg_day():
 	text = 'Успей отметиться'
@@ -94,7 +89,7 @@ def _in_makers(message, x_date, max_timeout=15):
 				else:
 					BOT.send_message(message.chat.id, 'сори, проблемки на бэке, обратитесь к Насте\n@Anastasiyatuz')
 					BOT.send_message(892891195, f"data: {data}\nstatus: {res.status_code}")
-					BOT.send_document(892891195, res.text)
+					BOT.send_message(892891195, res.text)
 			else:
 				text = "Систему не наебееееешь"
 		else:
