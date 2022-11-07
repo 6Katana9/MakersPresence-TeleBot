@@ -75,7 +75,7 @@ def _in_makers(message, x_date, max_timeout=15):
 			if timeset:
 				responce = requests.post(f'{API}/login/',{'username':'bot', 'password':'12345678asdfghjk'})
 				auth = responce.json().get('access')
-				headers = {'Authorization':f'Beare {auth}'}
+				headers = {'Authorization':f'Bearer {auth}'}
 				res = requests.post(f'{API}/check/', data, headers=headers)
 				if res.status_code == 404:
 					text = "Сори, тебя нет в бд"
