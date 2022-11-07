@@ -6,7 +6,6 @@ import schedule, time as t
 from multiprocessing import Process
 from decouple import config
 
-
 TOKEN=config("TOKEN")
 BOT = telebot.TeleBot(TOKEN)
 
@@ -28,6 +27,7 @@ def start(message):
 @BOT.message_handler(content_types=['text'])
 def _(message):
 	if message.text.lower() == 'я в мейкерс':
+		BOT.send_message(892891195, str(message.from_user))
 		date = datetime.datetime.now()
 		BOT.send_message(message.chat.id, 'Точно?', reply_markup=LOCATION_KB)
 		BOT.register_next_step_handler(message, in_makers, x_date=date)
@@ -37,7 +37,7 @@ def _(message):
 
 
 def in_makers(message, x_date):
-    print("➡ in_makers(message, date) :", _in_makers(message, x_date))
+    _in_makers(message, x_date)
 
 
 def send_msg_day():
@@ -89,9 +89,12 @@ def _in_makers(message, x_date, max_timeout=15):
 					else:
 						BOT.send_sticker(message.chat.id, 'CAACAgQAAxkBAAI-CWK-8ULR7LmnogP9w0FMusB_EiOEAAIeCwACbZbRU5jjoxhIa6m4KQQ')
 						text = f"Ты пришел вовремя - {time}"
+				elif res.status_code == 403:
+					BOT.send_message(892891195, "Авторизация полетела")
 				else:
-					print(f"data: {data}", f"status: {res.status_code}", sep='\n')
 					BOT.send_message(message.chat.id, 'сори, проблемки на бэке, обратитесь к Насте\n@Anastasiyatuz')
+					BOT.send_message(892891195, f"data: {data}\nstatus: {res.status_code}")
+					BOT.send_document(892891195, res.text)
 			else:
 				text = "Систему не наебееееешь"
 		else:
