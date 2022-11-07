@@ -6,3 +6,5 @@ index.html
 test.py
 user_db
 chat_id.txt
+.env
+.env-prod

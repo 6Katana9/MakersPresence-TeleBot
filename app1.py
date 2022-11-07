@@ -4,13 +4,14 @@ import requests
 import datetime
 import schedule, time as t
 from multiprocessing import Process
+from decouple import config
 
 
-
-TOKEN='5357024980:AAGJJZ9NSQKdIlmENeDWYHZ3_x2GZWzpuVo'
+TOKEN=config("TOKEN")
 BOT = telebot.TeleBot(TOKEN)
 
-API = 'https://check-mentors-crm.herokuapp.com'
+API = config("API")
+LOCATION = config("LOCATION")
 
 LOCATION_KB = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
 LOCATION_KB.add(types.KeyboardButton(text="Точно", request_location=True))
@@ -55,9 +56,10 @@ def send_msg_ev():
 
 
 def _in_makers(message, x_date, max_timeout=15):
+	text = '.'
 	BOT.delete_message(message.chat.id, message.message_id)
 	if message.forward_date == None:
-		if message.location is not None and geocoder(message.location.latitude, message.location.longitude) == '29, Табышалиева улица, БП, Бишкек, 720222, Киргизия':
+		if message.location is not None and geocoder(message.location.latitude, message.location.longitude) == LOCATION:
 			date_ = message.date
 			date = str(datetime.timedelta(seconds=date_)).split(", ")[-1]
 			hour, minutes, seconds = date.split(":")
@@ -72,13 +74,12 @@ def _in_makers(message, x_date, max_timeout=15):
 			timeset = (datetime.datetime.now() - x_date).seconds < max_timeout
 			if timeset:
 				responce = requests.post(f'{API}/login/',{'username':'bot', 'password':'12345678asdfghjk'})
-				auth = responce.json()['access']
-				headers = {'Authorization':f'Bearer {auth}'}
+				auth = responce.json().get('access')
+				headers = {'Authorization':f'Beare {auth}'}
 				res = requests.post(f'{API}/check/', data, headers=headers)
-				print(f"data: {data}", f"responce: {res.json()}", f"status: {res.status_code}", sep='\n')
 				if res.status_code == 404:
 					text = "Сори, тебя нет в бд"
-				else:
+				elif res.status_code == 200:
 					data = res.json()
 					time = data["time"]
 					is_late = data["is_late"]
@@ -88,13 +89,16 @@ def _in_makers(message, x_date, max_timeout=15):
 					else:
 						BOT.send_sticker(message.chat.id, 'CAACAgQAAxkBAAI-CWK-8ULR7LmnogP9w0FMusB_EiOEAAIeCwACbZbRU5jjoxhIa6m4KQQ')
 						text = f"Ты пришел вовремя - {time}"
+				else:
+					print(f"data: {data}", f"status: {res.status_code}", sep='\n')
+					BOT.send_message(message.chat.id, 'сори, проблемки на бэке, обратитесь к Насте\n@Anastasiyatuz')
 			else:
 				text = "Систему не наебееееешь"
 		else:
 			text = "Ты не на работе"
 			BOT.send_sticker(message.chat.id, 'CAACAgQAAxkBAAI-DWK-9ZXnaWP6Saad7Rj9qMVaz-aWAALJCwACde_QU6WFK9dLr9r_KQQ')
-
-		BOT.send_message(message.chat.id, text, reply_markup=NO_LOCATION_KB)
+		if text != '.':
+			BOT.send_message(message.chat.id, text, reply_markup=NO_LOCATION_KB)
 	else:
 		BOT.send_message(message.chat.id, 'Систему не наебешь', reply_markup=NO_LOCATION_KB)
 
