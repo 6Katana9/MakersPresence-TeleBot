@@ -27,7 +27,7 @@ def start(message):
 @BOT.message_handler(content_types=['text'])
 def _(message):
 	if message.text.lower() == 'я в мейкерс':
-		BOT.send_message(892891195, str(message.from_user))
+		# BOT.send_message(892891195, str(message.from_user))
 		date = datetime.datetime.now()
 		BOT.send_message(message.chat.id, 'Точно?', reply_markup=LOCATION_KB)
 		BOT.register_next_step_handler(message, _in_makers, x_date=date)
@@ -64,6 +64,7 @@ def _in_makers(message, x_date, max_timeout=15):
 			data = {
 				'id':id,
 				'time':f'{hour}:{minutes}:{seconds}',
+				'time':'09:10:00',
 				'username':user_ if user_ else 'dfgjbdgkhb'
 			}
 			timeset = (datetime.datetime.now() - x_date).seconds < max_timeout
@@ -78,12 +79,14 @@ def _in_makers(message, x_date, max_timeout=15):
 					data = res.json()
 					time = data["time"]
 					is_late = data["is_late"]
-					if is_late:
+					if is_late == '-':
 						BOT.send_sticker(message.chat.id, 'CAACAgQAAxkBAAI-BWK-8TZ-QMul0nqWqgAB7vfD9UifGwACmQkAAj3E4VO02kKVUZJxEykE')
 						text = f"Ты опоздал - {time}"
-					else:
+					elif is_late == '+':
 						BOT.send_sticker(message.chat.id, 'CAACAgQAAxkBAAI-CWK-8ULR7LmnogP9w0FMusB_EiOEAAIeCwACbZbRU5jjoxhIa6m4KQQ')
 						text = f"Ты пришел вовремя - {time}"
+					else:
+						text = f"Еще рано отмечаться\nПопробуй отметиться после {data['should']}"
 				elif res.status_code == 403:
 					BOT.send_message(892891195, "Авторизация полетела")
 				else:
