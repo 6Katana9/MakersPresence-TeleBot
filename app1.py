@@ -64,7 +64,6 @@ def _in_makers(message, x_date, max_timeout=15):
 			data = {
 				'id':id,
 				'time':f'{hour}:{minutes}:{seconds}',
-				'time':'09:10:00',
 				'username':user_ if user_ else 'dfgjbdgkhb'
 			}
 			timeset = (datetime.datetime.now() - x_date).seconds < max_timeout
@@ -86,7 +85,7 @@ def _in_makers(message, x_date, max_timeout=15):
 						BOT.send_sticker(message.chat.id, 'CAACAgQAAxkBAAI-CWK-8ULR7LmnogP9w0FMusB_EiOEAAIeCwACbZbRU5jjoxhIa6m4KQQ')
 						text = f"Ты пришел вовремя - {time}"
 					else:
-						text = f"Еще рано отмечаться\nПопробуй отметиться после {data['should']}"
+						text = f"Еще рано отмечаться\nПопробуй отметиться после: {data['should']}"
 				elif res.status_code == 403:
 					BOT.send_message(892891195, "Авторизация полетела")
 				else:
